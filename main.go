@@ -10,10 +10,17 @@ import (
 )
 
 var (
-	tickMessage = "tick"
-	tockMessage = "tock"
-	bongMessage = "bong"
+	tickMessage = getEnv("TICK_MESSAGE", "tick")
+	tockMessage = getEnv("TOCK_MESSAGE", "tock")
+	bongMessage = getEnv("BONG_MESSAGE", "bong")
 )
+
+func getEnv(key, defaultValue string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+	return defaultValue
+}
 
 func printMessages(wg *sync.WaitGroup) {
 	defer wg.Done()
@@ -50,30 +57,6 @@ func main() {
 			case sig := <-sigChan:
 				fmt.Printf("Received signal: %s, exiting...\n", sig)
 				os.Exit(0)
-			}
-		}
-	}()
-
-	// User input handling to change messages
-	go func() {
-		for {
-			var command, newValue string
-			fmt.Println("Enter command (tick, tock, bong) followed by new value:")
-			_, err := fmt.Scanf("%s %s", &command, &newValue)
-			if err != nil {
-				fmt.Println("Invalid input. Usage: <command> <new value>")
-				continue
-			}
-
-			switch command {
-			case "tick":
-				tickMessage = newValue
-			case "tock":
-				tockMessage = newValue
-			case "bong":
-				bongMessage = newValue
-			default:
-				fmt.Println("Unknown command. Valid commands are: tick, tock, bong")
 			}
 		}
 	}()

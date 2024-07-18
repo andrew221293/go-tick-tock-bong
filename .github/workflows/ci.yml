@@ -41,8 +41,5 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/go-tick-tock-bong:latest
 
-      - name: Post Login to Docker Hub
-        run: echo "Docker login successful"
-
       - name: Complete job
         run: echo "Job complete"
